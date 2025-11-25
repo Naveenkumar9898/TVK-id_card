@@ -1,0 +1,424 @@
+body {
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.main-container {
+  width: 100%;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* .application {
+  display: flex;
+} */
+
+/* ---------- HEADER ---------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #a00000;
+  padding-bottom: 20px;
+}
+
+.title-box h1 {
+  font-size: 40px;
+  color: #a00000;
+  margin: 0;
+}
+
+.title-box h3 {
+  margin: 5px 0;
+  font-size: 20px;
+  color: #000;
+}
+
+.header-img img {
+  width: 160px;
+}
+
+
+.con {
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.form-box {
+
+  margin: 10px;
+}
+
+label {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 6px;
+
+}
+
+/* ---------- INPUT FIELDS ---------- */
+input {
+  width: 90%;
+  border: 2px solid #990000;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 15px;
+  outline: none;
+  display: block;
+}
+
+input:focus {
+  border-color: #ff0000;
+}
+
+/* FILE BOX */
+input[type="file"] {
+  border-style: dashed;
+  padding: 6px;
+}
+
+/* RADIO BUTTONS */
+.radio {
+  display: flex;
+  gap: 20px;
+  margin-top: 5px;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn {
+  margin-top: 30px;
+  background: #ba0000;
+  color: white;
+  padding: 12px 50px;
+  border-radius: 8px;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #e20000;
+}
+
+/* ================================================================================================ */
+body {
+  font-family: Arial, sans-serif;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.id-card {
+  width: 900px;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 2px solid #ccc;
+  position: relative;
+}
+
+.con-img img {
+  position: absolute;
+  width: 100px;
+  bottom: 10%;
+  left: 35%;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  background: #b30000;
+  color: yellow;
+  padding: 15px 0;
+}
+
+.header p {
+  color: #fff;
+  font-size: 20px;
+}
+
+/* Layout */
+.content {
+  display: flex;
+  padding: 1px;
+}
+
+/* Left Section */
+.left-section {
+  width: 25%;
+  text-align: center;
+}
+
+.profile {
+  width: 120px;
+  height: 150px;
+  border: 3px solid #b30000;
+}
+
+.qr {
+  width: 110px;
+  margin-top: 15px;
+}
+
+.qr-text {
+  font-size: 15px;
+  margin-top: 5px;
+}
+
+/* Details */
+.details {
+  width: 45%;
+  padding-left: 37px;
+  font-size: 20px;
+  padding-top: 30px;
+}
+
+.card-title {
+  text-align: center;
+  background: #eaf2ff;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.card-details p {
+  margin: 10px;
+}
+
+/* Image Right */
+.person-image {
+  width: 30%;
+  text-align: right;
+}
+
+.leader {
+  width: 247px;
+}
+
+/* Footer */
+.footer {
+  text-align: right;
+  padding: 5px 110px;
+}
+
+
+
+.sign {
+  width: 80px;
+}
+
+.sign p {
+  margin-right: 28px;
+}
+
+h4 {
+  padding: 20px 0px;
+  text-align: center;
+  background-color: #b30000;
+  color: white;
+}
+
+/* ============================================================== */
+.table {
+  border: 1px solid black;
+  width: 712px;
+  height: 0%;
+  margin-top: 40px;
+}
+
+table,
+thead,
+tr,
+th,
+td,
+tbody {
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+th,
+td {
+  width: 20px;
+
+}
+
+button {
+  color: rgb(255, 255, 255);
+  background-color: #b30000;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-right: 2px;
+
+}
+
+.Update {
+  background-color: #b30000;
+  margin-right: 2px;
+  margin: 2px;
+}
+
+.delete {
+  background-color: #b30000;
+}
+
+.Print {
+  background-color: #b30000;
+}
+
+.action {
+  width: 250px;
+}
+
+.name {
+  width: 125px;
+}
+
+.download {
+  text-align: right;
+}
+
+.aan {
+  display: flex;
+  gap: 10px;
+}
+
+@media print {
+  header {
+    display: none;
+  }
+
+  .main-container {
+    display: none;
+  }
+
+  .download {
+    display: none;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+
+  header {
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .title-box h1 {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .title-box h3 {
+    font-size: 16px;
+  }
+
+  .title-box p {
+    font-size: 12px;
+    padding: 0 10px;
+  }
+
+  .header-img img {
+    width: 80px;
+    height: 80px;
+    margin-top: 10px;
+  }
+
+
+  .main-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+
+  .application {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .con {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-box label {
+    font-size: 14px;
+  }
+
+  .form-box input {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  .radio {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .radio label {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 15px;
+  }
+
+  .table {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 15px;
+  }
+
+  table {
+
+    font-size: 8px;
+  }
+
+  table th,
+  table td {
+    padding: 4px;
+  }
+
+  .name {
+    width: 110px;
+  }
+
+  .action {
+    width: 120px;
+  }
+
+  .update,
+  .delete,
+  .print {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+}
