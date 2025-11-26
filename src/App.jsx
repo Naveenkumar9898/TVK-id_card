@@ -227,20 +227,22 @@ function App() {
                   <label>{labels[lang].gender}</label>
                   <div className="radio">
                     <div className="aan">
-                      <input type="radio" className="op" name="gender"
+                      <label htmlFor="gender1"><input type="radio" id="gender1" className="op" name="gender"
                         value="Male"
                         onClick={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
                         required
-                      /> <label>Male
+                      /> Male
                       </label>
 
                       <br />
-                      <input type="radio" className="op" name="gender"
-                        value="Female"
-                        onClick={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
-                        required
-                      /> <label> female
+                      <label htmlFor="gender2">
+                        <input type="radio" id="gender2" className="op" name="gender"
+                          value="Female"
+                          onClick={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
+                          required
+                        />  female
                       </label>
+
                     </div>
                   </div>
 
@@ -290,7 +292,7 @@ function App() {
                   <label>{labels[lang].state}</label>
                   <input type="text"
                     // value={volunteers.state}
-                    value="tamilnadu"
+                    value="தமிழ்நாடு"
                     onChange={(e) => setVolunteers({ ...volunteers, state: e.target.value })}
                     required
 
@@ -378,7 +380,7 @@ function App() {
           print && print.name !== "" ? (< Card member={print} />) : ("")
         }
 
-      </div>
+      </div >
     </>
   );
 
