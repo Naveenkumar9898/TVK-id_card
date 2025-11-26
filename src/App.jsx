@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import "./App.css";
 import Card from "./components/Card";
-
+import { FaSun, FaMoon } from "react-icons/fa";
 
 
 
@@ -12,11 +12,15 @@ function App() {
   const [dark, setDark] = useState(false);
 
   let themechanger = () => {
-    setDark(!dark);
-    document.body.style.backgroundColor = dark ? "white" : "black";
-    document.body.style.color = dark ? "black" : "white";
-    document.body.style.transition = "all 0.5s ease";
+    setDark((prevDark) => {
+      const newDark = !prevDark;
+      document.body.style.backgroundColor = newDark ? "black" : "white";
+      document.body.style.color = newDark ? "white" : "black";
+      document.body.style.transition = "all 0.5s ease";
+      return newDark;
+    });
   };
+
 
 
   const [lang, setLang] = useState("tamil");
@@ -180,13 +184,13 @@ function App() {
           </div>
         </header>
         <div className="language">
-          <select value={lang} onChange={(e) => setLang(e.target.value)}>
+          <select className="languagebtn" value={lang} onChange={(e) => setLang(e.target.value)}>
             <option value="english">English</option>
             <option value="tamil">தமிழ்</option>
           </select>
 
-          <button onClick={themechanger}>
-            {dark ? "Light Mode" : "Dark Mode"}
+          <button className="dark" onClick={themechanger} >
+            {dark ? <FaSun /> : <FaMoon />}
           </button>
 
         </div>
