@@ -39,6 +39,7 @@ function App() {
       state: "மாநிலம்*",
       photo: "புகைப்படம்",
       submit: "பதிவு",
+      statename: "தமிழ்நாடு"
     },
     english: {
       name: "Name*",
@@ -53,6 +54,7 @@ function App() {
       state: "State*",
       photo: "Photo",
       submit: "Submit",
+      statename: "Tamilnadu"
     },
   };
 
@@ -66,7 +68,7 @@ function App() {
       dob: "",
       legislative: "",
       distric: "",
-      state: "",
+      state: labels[lang].statename,
       photo: ""
 
     }
@@ -109,10 +111,10 @@ function App() {
       photo: "",
       gender: ""
     })
-    console.log(idcard)
+    // console.log(idcard)
 
 
-    console.log(editIdx)
+    // console.log(editIdx)
 
     if (editIdx === null) {
 
@@ -139,7 +141,7 @@ function App() {
   let objupdate = (inx) => {
     console.log(inx)
     let [updates] = idcard.filter((ele, index) => index === inx)
-    console.log(updates)
+    // console.log(updates)
     setVolunteers({
       name: updates.name,
       num: updates.num,
@@ -162,7 +164,19 @@ function App() {
     setPrint(printobj)
   }
 
+  let handlelang = (e) => {
 
+    setLang(e.target.value)
+    if (lang == "tamil") {
+      setVolunteers((prev) => ({ ...prev, state: "TamilNadu" }))
+    } else {
+      setVolunteers((prev) => ({ ...prev, state: "தமிழ்நாடு" }))
+    }
+
+
+  }
+
+  console.log(volunteers, labels[lang].statename)
 
 
   return (
@@ -184,7 +198,7 @@ function App() {
           </div>
         </header>
         <div className="language">
-          <select className="languagebtn" value={lang} onChange={(e) => setLang(e.target.value)}>
+          <select className="languagebtn" value={lang} onChange={handlelang}>
             <option value="english">English</option>
             <option value="tamil">தமிழ்</option>
           </select>
@@ -292,7 +306,7 @@ function App() {
                   <label>{labels[lang].state}</label>
                   <input type="text"
                     // value={volunteers.state}
-                    value="தமிழ்நாடு"
+                    value={volunteers.state}
                     onChange={(e) => setVolunteers({ ...volunteers, state: e.target.value })}
                     required
 
