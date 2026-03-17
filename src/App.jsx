@@ -1,7 +1,9 @@
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./App.css";
 import Card from "./components/Card";
 import { FaSun, FaMoon } from "react-icons/fa";
+
 
 
 
@@ -60,124 +62,159 @@ function App() {
 
 
 
-  const [volunteers, setVolunteers] = useState(
-    {
-      name: "",
-      num: "",
-      bno: "",
-      dob: "",
-      legislative: "",
-      distric: "",
-      state: labels[lang].statename,
-      photo: ""
+  const API = "http://localhost:5000";
 
-    }
+  const [volunteers, setVolunteers] = useState({
+    name: "",
+    num: "",
+    bno: "",
+    dob: "",
+    legislative: "",
+    distric: "",
+    state: labels[lang].statename,
+    photo: "",
+    gender: "",
+  });
 
-  )
-  const [print, setPrint] = useState(
-    {
-      name: "",
-      num: "",
-      bno: "",
-      dob: "",
-      legislative: "",
-      distric: "",
-      state: "",
-      photo: ""
-
-    }
-
-  )
-  // console.log(volunteers)
-
-
+  const [print, setPrint] = useState({
+    name: "",
+    num: "",
+    bno: "",
+    dob: "",
+    legislative: "",
+    distric: "",
+    state: "",
+    photo: "",
+    gender: "",
+  });
 
   const [idcard, setIdcard] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const getPayload = (vol) => ({
+    name: vol.name,
+    dob: vol.dob,
+    gender: vol.gender,
+    phone: vol.num,
+    boothNumber: Number(vol.bno || 0),
+    legislative: vol.legislative,
+    district: vol.distric,
+    state: vol.state,
+    photo: vol.photo,
+  });
 
-
-  let submit = (e) => {
-    e.preventDefault()
-    setIdcard([...idcard, volunteers])
-
-    setVolunteers({
-      name: "",
-      num: "",
-      bno: "",
-      dob: "",
-      legislative: "",
-      distric: "",
-      state: "",
-      photo: "",
-      gender: ""
-    })
-    // console.log(idcard)
-
-
-    // console.log(editIdx)
-
-    if (editIdx === null) {
-
-      setIdcard([...idcard, volunteers]);
-    } else {
-
-      let updateList = idcard.map((ele, index) =>
-        index === editIdx ? volunteers : ele
-      );
-      setIdcard(updateList);
-      setEditIdx(null);
+  const fetchMembers = async () => {
+    try {
+      const res = await axios.get(`${API}/members`);
+      setIdcard(res.data.response || []);
+    } catch (err) {
+      setError("Unable to load members");
+      console.error(err);
     }
-  }
+  };
 
-  let iddelete = (inx) => {
-    console.log(inx)
-    let removeid = idcard.filter((ele, index) => index !== inx)
-    setIdcard(removeid)
+  useEffect(() => {
+    fetchMembers();
+    setLang("english");
+  }, []);
 
-  }
-  const [editIdx, setEditIdx] = useState(null);
-  console.log(editIdx)
+  const validateForm = () => {
+    if (!volunteers.name.trim()) return "Name is required.";
+    if (!volunteers.dob) return "Date of birth is required.";
+    if (!volunteers.gender) return "Select gender.";
+    if (!volunteers.num.trim()) return "Phone number is required.";
+    if (!volunteers.bno.trim()) return "Booth number is required.";
+    if (!volunteers.legislative.trim()) return "Legislative field is required.";
+    if (!volunteers.distric.trim()) return "District is required.";
+    if (!volunteers.state.trim()) return "State is required.";
+    if (!volunteers.photo.trim()) return "Photo is required.";
+    return "";
+  };
 
-  let objupdate = (inx) => {
-    console.log(inx)
-    let [updates] = idcard.filter((ele, index) => index === inx)
-    // console.log(updates)
-    setVolunteers({
-      name: updates.name,
-      num: updates.num,
-      bno: updates.bno,
-      dob: updates.dob,
-      legislative: updates.legislative,
-      distric: updates.distric,
-      state: updates.state,
-      photo: updates.photo,
-      gender: updates.gender
-
-    })
-    setEditIdx(inx)
-  }
-
-  let printfun = (inx) => {
-    console.log(inx)
-    let [printobj] = idcard.filter((ele, index) => index == inx)
-    console.log(printobj)
-    setPrint(printobj)
-  }
-
-  let handlelang = (e) => {
-
-    setLang(e.target.value)
-    if (lang == "tamil") {
-      setVolunteers((prev) => ({ ...prev, state: "TamilNadu" }))
-    } else {
-      setVolunteers((prev) => ({ ...prev, state: "தமிழ்நாடு" }))
+  const submit = async (e) => {
+    e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
     }
 
+    setLoading(true);
+    setError("");
+    try {
+      const payload = getPayload(volunteers);
+      if (editId) {
+        await axios.put(`${API}/member/${editId}`, payload);
+      } else {
+        await axios.post(`${API}/member`, payload);
+      }
+      await fetchMembers();
+      setVolunteers({
+        name: "",
+        num: "",
+        bno: "",
+        dob: "",
+        legislative: "",
+        distric: "",
+        state: labels[lang].statename,
+        photo: "",
+        gender: "",
+      });
+      setEditId(null);
+    } catch (err) {
+      setError(err?.response?.data?.message || err.message || "Save failed");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  }
+  const iddelete = async (id) => {
+    try {
+      await axios.delete(`${API}/member/${id}`);
+      await fetchMembers();
+    } catch (err) {
+      setError("Delete failed");
+      console.error(err);
+    }
+  };
 
-  console.log(volunteers, labels[lang].statename)
+  const objupdate = (member) => {
+    setVolunteers({
+      name: member.name || "",
+      num: member.phone || "",
+      bno: member.boothNumber ? String(member.boothNumber) : "",
+      dob: member.dob ? member.dob.substring(0, 10) : "",
+      legislative: member.legislative || "",
+      distric: member.district || "",
+      state: member.state || labels[lang].statename,
+      photo: member.photo || "",
+      gender: member.gender || "",
+    });
+    setEditId(member._id);
+  };
 
+  const printfun = (member) => {
+    setPrint({
+      ...member,
+      num: member.phone || "",
+      bno: member.boothNumber ? String(member.boothNumber) : "",
+      distric: member.district || "",
+    });
+  };
+
+  const handlelang = (e) => {
+    const newLang = e.target.value;
+    setLang(newLang);
+    setVolunteers((prev) => ({
+      ...prev,
+      state: newLang === "tamil" ? "தமிழ்நாடு" : "Tamilnadu",
+    }));
+  };
+
+  console.log(volunteers, labels[lang].statename);
 
   return (
     <>
@@ -208,6 +245,8 @@ function App() {
           </button>
 
         </div>
+        {loading && <p className="status">Saving...</p>}
+        {error && <p className="status error">{error}</p>}
         <div className="main-container">
 
           <div className="application">
@@ -243,7 +282,8 @@ function App() {
                     <div className="aan">
                       <label htmlFor="gender1"><input type="radio" id="gender1" className="op" name="gender"
                         value="Male"
-                        onClick={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
+                        checked={volunteers.gender === "Male"}
+                        onChange={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
                         required
                       /> Male
                       </label>
@@ -252,7 +292,8 @@ function App() {
                       <label htmlFor="gender2">
                         <input type="radio" id="gender2" className="op" name="gender"
                           value="Female"
-                          onClick={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
+                          checked={volunteers.gender === "Female"}
+                          onChange={(e) => setVolunteers({ ...volunteers, gender: e.target.value })}
                           required
                         />  female
                       </label>
@@ -305,7 +346,7 @@ function App() {
                 <div className="form-box">
                   <label>{labels[lang].state}</label>
                   <input type="text"
-                    // value={volunteers.state}
+                    
                     value={volunteers.state}
                     onChange={(e) => setVolunteers({ ...volunteers, state: e.target.value })}
                     required
@@ -316,9 +357,12 @@ function App() {
                 <div className="form-box">
                   <label>{labels[lang].photo}</label>
                   <input type="file"
-                    onChange={(e) => setVolunteers({
-                      ...volunteers, photo: URL.createObjectURL(e.target.files[0])
-                    })}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setVolunteers({ ...volunteers, photo: URL.createObjectURL(file) });
+                      }
+                    }}
                     required />
 
 
@@ -327,7 +371,9 @@ function App() {
               </div>
 
               <center>
-                <button className="submit-btn">{labels[lang].submit}</button>
+                <button type="submit" className="submit-btn" disabled={loading}>
+                  {loading ? "Saving..." : labels[lang].submit}
+                </button>
               </center>
             </form>
           </div>
@@ -349,7 +395,7 @@ function App() {
               <tbody>
                 {idcard.length > 0 ? (
                   idcard.map((ele, inx) => (
-                    <tr key={inx}>
+                    <tr key={ele._id || inx}>
                       <td>{inx + 1}</td>
                       <td>
                         {ele.photo ? (
@@ -359,21 +405,19 @@ function App() {
                         )}
                       </td>
                       <td>{ele.name}</td>
-                      <td>{ele.dob}</td>
+                      <td>{ele.dob ? ele.dob.substring(0, 10) : ""}</td>
                       <td>{ele.gender}</td>
-                      <td>{ele.bno}</td>
+                      <td>{ele.boothNumber}</td>
                       <td>{ele.legislative}</td>
-                      <td>{ele.distric}</td>
-                      {/* <td>{ele.}</td>
-                    <td>{ele.}</td> */}
+                      <td>{ele.district}</td>
 
                       <td>
-                        <button className="update" onClick={() => objupdate(inx)}>Update</button>
-                        <button className="delete" onClick={() => iddelete(inx)}>Delete</button>
+                        <button className="update" onClick={() => objupdate(ele)}>Update</button>
+                        <button className="delete" onClick={() => iddelete(ele._id)}>Delete</button>
                       </td>
 
                       <td>
-                        <button className="print" onClick={() => printfun(inx)}>Print</button>
+                        <button className="print" onClick={() => printfun(ele)}>Print</button>
                       </td>
                     </tr>
                   ))) :
@@ -391,7 +435,7 @@ function App() {
 
         {/* ============================================================================================== */}
         {
-          print && print.name !== "" ? (< Card member={print} />) : ("")
+          print && print.name !== "" ? (<Card member={print} onClose={() => setPrint({})} />) : ("")
         }
 
       </div >

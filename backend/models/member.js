@@ -1,44 +1,59 @@
 const mongoose = require("mongoose");
 
-
-const member = new mongoose.Schema({
+const memberSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      trim: true,
+      required: true,
     },
+
     dob: {
-        type: Number,
-        trim: true,
-        required: true
+      type: Date,
+      required: true,
     },
+
     gender: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      required: true,
+      enum: ["Male", "Female"],
     },
-    pnumber: {
-        type: Number,
-        trim: true,
-        required: true
+
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    legestic: {
-        type: Number,
-        trim: true,
-        required: true
+
+    boothNumber: {
+      type: Number,
+      required: true,
     },
+
+    legislative: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     district: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
     },
+
     state: {
-        type: String,
-        trim: true,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
     },
 
+    photo: {
+      type: String, 
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-})
-
-module.exports = mongoose.model("member", member)
+module.exports = mongoose.model("Member", memberSchema);

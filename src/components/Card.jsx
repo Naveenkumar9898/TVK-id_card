@@ -1,8 +1,7 @@
 import React from 'react'
 import "./Card.css"
-const Card = (props) => {
-    console.log(props)
-    props = props.member;
+const Card = ({ member, onClose }) => {
+    if (!member) return null;
 
     return (
         <>
@@ -18,7 +17,7 @@ const Card = (props) => {
 
 
                     <div className="left-section">
-                        <img src={props.photo} className="profile" alt="" />
+                        <img src={member.photo || ""} className="profile" alt="" />
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6MSeP9-tHEBAiDsSyaqUdrCj6Nb3FrmCxOQ&s" className="qr" alt="" />
                         <p className="qr-text">UYR0975888</p>
                     </div>
@@ -27,14 +26,14 @@ const Card = (props) => {
                     <div className="details">
                         <h3 className="card-title">உறுப்பினர் அட்டை</h3>
 
-                        {print && print.num !== "" ? (
+                        {member.num ? (
 
                             <div className="card-details">
-                                <p><b>பெயர்: {props.name}</b></p>
-                                <p><b>பூத் எண்:{props.bno}</b></p>
-                                <p><b>சட்டமன்றம்:{props.legislative}</b> </p>
-                                <p><b>மாவட்டம்:{props.distric}</b> </p>
-                                <p><b>மாநிலம்:Tamilnadu</b> </p>
+                                <p><b>பெயர்: {member.name}</b></p>
+                                <p><b>பூத் எண்: {member.boothNumber || member.bno}</b></p>
+                                <p><b>சட்டமன்றம்: {member.legislative}</b> </p>
+                                <p><b>மாவட்டம்: {member.district || member.distric}</b> </p>
+                                <p><b>மாநிலம்: {member.state}</b> </p>
                             </div>
 
                         ) : (
@@ -59,8 +58,12 @@ const Card = (props) => {
                 <h4>275, சி ஷோர் டவுன், 8வது அவென்யூ, பனையூர், கிழக்கு கடற்கரைச் சாலை, சென்னை - 600119. </h4>
 
             </div>
-            <button className="download" onClick={() => window.print()}>Print</button >
-
+            <div className="card-actions">
+                <button className="download" onClick={() => window.print()}>Print</button>
+                {typeof onClose === "function" && (
+                    <button className="close" onClick={onClose}>Close</button>
+                )}
+            </div>
 
         </>
 
