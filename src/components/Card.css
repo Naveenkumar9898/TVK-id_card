@@ -120,6 +120,45 @@ h4 {
     color: white;
 }
 
+@media print {
+    html, body {
+        background: white !important;
+        color: black !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .id-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 850px !important;
+        margin: 0 auto !important;
+    }
+
+    .header {
+        background: #b30000 !important;
+        color: yellow !important;
+    }
+
+    .card-title {
+        background: #eaf2ff !important;
+    }
+
+    h4 {
+        background-color: #b30000 !important;
+        color: white !important;
+    }
+
+    .id-card, .header, .card-title, h4, .profile, .sign {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
 
 /* ================================
    MOBILE RESPONSIVE (max-width: 500px)

@@ -4,10 +4,6 @@ import "./App.css";
 import Card from "./components/Card";
 import { FaSun, FaMoon } from "react-icons/fa";
 
-
-
-
-
 function App() {
 
 
@@ -25,7 +21,10 @@ function App() {
 
 
 
-  const [lang, setLang] = useState("tamil");
+  const [lang, setLang] = useState(() => {
+    const stored = localStorage.getItem("tvk-lang");
+    return stored === "tamil" ? "tamil" : "english";
+  });
 
   const labels = {
     tamil: {
@@ -60,20 +59,36 @@ function App() {
     },
   };
 
-
-
-  const API = "http://localhost:5000";
-
-  const [volunteers, setVolunteers] = useState({
+  const defaultVolunteerState = (langValue = "english") => ({
     name: "",
     num: "",
     bno: "",
     dob: "",
     legislative: "",
     distric: "",
-    state: labels[lang].statename,
+    state: labels[langValue].statename,
     photo: "",
     gender: "",
+  });
+
+  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  const [volunteers, setVolunteers] = useState(() => {
+    const saved = localStorage.getItem("tvk-volunteers");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === "object" && parsed !== null) {
+          return {
+            ...defaultVolunteerState(lang),
+            ...parsed,
+          };
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return defaultVolunteerState(lang);
   });
 
   const [print, setPrint] = useState({
@@ -117,19 +132,26 @@ function App() {
 
   useEffect(() => {
     fetchMembers();
-    setLang("english");
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("tvk-lang", lang);
+  }, [lang]);
+
+  useEffect(() => {
+    localStorage.setItem("tvk-volunteers", JSON.stringify(volunteers));
+  }, [volunteers]);
+
   const validateForm = () => {
-    if (!volunteers.name.trim()) return "Name is required.";
+    if (!volunteers.name?.trim()) return "Name is required.";
     if (!volunteers.dob) return "Date of birth is required.";
     if (!volunteers.gender) return "Select gender.";
-    if (!volunteers.num.trim()) return "Phone number is required.";
-    if (!volunteers.bno.trim()) return "Booth number is required.";
-    if (!volunteers.legislative.trim()) return "Legislative field is required.";
-    if (!volunteers.distric.trim()) return "District is required.";
-    if (!volunteers.state.trim()) return "State is required.";
-    if (!volunteers.photo.trim()) return "Photo is required.";
+    if (!volunteers.num?.trim()) return "Phone number is required.";
+    if (!volunteers.bno?.trim()) return "Booth number is required.";
+    if (!volunteers.legislative?.trim()) return "Legislative field is required.";
+    if (!volunteers.distric?.trim()) return "District is required.";
+    if (!volunteers.state?.trim()) return "State is required.";
+    if (!volunteers.photo?.trim()) return "Photo is required.";
     return "";
   };
 
@@ -145,26 +167,39 @@ function App() {
     setError("");
     try {
       const payload = getPayload(volunteers);
+      let response;
       if (editId) {
-        await axios.put(`${API}/member/${editId}`, payload);
+        response = await axios.put(`${API}/member/${editId}`, payload, {
+          timeout: 10000,
+        });
       } else {
-        await axios.post(`${API}/member`, payload);
+        response = await axios.post(`${API}/member`, payload, {
+          timeout: 10000,
+        });
       }
       await fetchMembers();
-      setVolunteers({
-        name: "",
-        num: "",
-        bno: "",
-        dob: "",
-        legislative: "",
-        distric: "",
-        state: labels[lang].statename,
-        photo: "",
-        gender: "",
-      });
+      
+      // Automatically show the ID card after successful submission
+      if (response?.data?.status && response?.data?.response) {
+        const savedMember = response.data.response;
+        printfun({
+          ...savedMember,
+          phone: savedMember.phone,
+          boothNumber: savedMember.boothNumber,
+          district: savedMember.district,
+        });
+      }
+      
+      setVolunteers(defaultVolunteerState(lang));
       setEditId(null);
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || "Save failed");
+      if (err.code === "ECONNABORTED") {
+        setError("Network timeout. Please make sure backend is running on port 5000.");
+      } else if (err.message === "Network Error") {
+        setError("Network Error: please start backend server and reload.");
+      } else {
+        setError(err?.response?.data?.message || err.message || "Save failed");
+      }
       console.error(err);
     } finally {
       setLoading(false);
@@ -172,11 +207,21 @@ function App() {
   };
 
   const iddelete = async (id) => {
+    if (!id) {
+      setError("Invalid member id");
+      return;
+    }
     try {
-      await axios.delete(`${API}/member/${id}`);
+      const res = await axios.delete(`${API}/member/${id}`);
+      if (!res?.data?.status) {
+        setError(res?.data?.message || "Delete failed");
+        return;
+      }
+      setIdcard((prev) => prev.filter((member) => member._id !== id));
+      setError("");
       await fetchMembers();
     } catch (err) {
-      setError("Delete failed");
+      setError(err?.response?.data?.message || err?.message || "Delete failed");
       console.error(err);
     }
   };
@@ -363,7 +408,7 @@ function App() {
                         setVolunteers({ ...volunteers, photo: URL.createObjectURL(file) });
                       }
                     }}
-                    required />
+                  />
 
 
                 </div>
@@ -390,6 +435,7 @@ function App() {
                   <th>Legislative</th>
                   <th>Distric</th>
                   <th className="action">Action</th>
+                  <th>Print</th>
                 </tr>
               </thead>
               <tbody>
@@ -423,7 +469,7 @@ function App() {
                   ))) :
                   (
                     <tr>
-                      <td colSpan={8}>No record found</td>
+                      <td colSpan={10}>No record found</td>
                     </tr>
                   )}
               </tbody>

@@ -227,27 +227,33 @@ h4 {
 .table {
   border: 1px solid black;
   width: 712px;
-  height: 0%;
   margin-top: 40px;
 }
 
-table,
-thead,
-tr,
-th,
-td,
-tbody {
+.table table,
+.table thead,
+.table tr,
+.table th,
+.table td,
+.table tbody {
   border: 1px solid black;
   border-collapse: collapse;
   width: 100%;
   text-align: center;
 }
 
-th,
-td {
-  width: 20px;
-
+.table th,
+.table td {
+  padding: 8px;
+  width: auto;
 }
+
+.table img {
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+}
+
 
 button {
   color: rgb(255, 255, 255);
@@ -291,19 +297,47 @@ button {
 }
 
 @media print {
-  header {
-    display: none;
+  body {
+    background: white !important;
   }
 
-  .main-container {
-    display: none;
+  /* Hide controls and app UI in print */
+  body > header,
+  .title-box,
+  .language,
+  .dark,
+  .languagebtn,
+  .status,
+  .main-container,
+  .application,
+  .form-box,
+  form,
+  .submit-btn,
+  .table,
+  .download,
+  .card-actions,
+  .Print,
+  button {
+    display: none !important;
   }
 
-  .download {
-    display: none;
+  /* Show only card in print */
+  .id-card {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid !important;
   }
 
+  .id-card * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
+
+
 
 
 @media (max-width: 500px) {
