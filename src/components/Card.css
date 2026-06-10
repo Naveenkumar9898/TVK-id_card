@@ -121,22 +121,34 @@ h4 {
 }
 
 @media print {
-    html, body {
+    @page {
+        margin: 0;
+    }
+
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
         background: white !important;
         color: black !important;
     }
 
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+    body * {
+        visibility: hidden !important;
+    }
+
+    .id-card,
+    .id-card * {
+        visibility: visible !important;
     }
 
     .id-card {
-        border: 1px solid #ccc !important;
+        border: none !important;
         box-shadow: none !important;
         width: 100% !important;
         max-width: 850px !important;
         margin: 0 auto !important;
+        background: white !important;
     }
 
     .header {
@@ -153,7 +165,13 @@ h4 {
         color: white !important;
     }
 
-    .id-card, .header, .card-title, h4, .profile, .sign {
+    .id-card,
+    .id-card h1,
+    .id-card p,
+    .id-card h3,
+    .id-card h4,
+    .id-card img,
+    .id-card div {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }

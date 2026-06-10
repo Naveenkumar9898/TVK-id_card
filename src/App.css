@@ -225,7 +225,7 @@ h4 {
 
 /* ============================================================== */
 .table {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   width: 712px;
   margin-top: 40px;
 }
@@ -297,12 +297,41 @@ button {
 }
 
 @media print {
-  body {
-    background: white !important;
+  @page {
+    margin: 0;
   }
 
-  /* Hide controls and app UI in print */
-  body > header,
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .id-card,
+  .id-card * {
+    visibility: visible !important;
+  }
+
+  .id-card {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    page-break-inside: avoid !important;
+  }
+
+  .card-actions,
+  button,
   .title-box,
   .language,
   .dark,
@@ -315,23 +344,17 @@ button {
   .submit-btn,
   .table,
   .download,
-  .card-actions,
-  .Print,
-  button {
+  .Print {
     display: none !important;
   }
 
-  /* Show only card in print */
-  .id-card {
-    display: block !important;
-    position: static !important;
-    width: 100% !important;
-    max-width: 900px !important;
-    margin: 0 auto !important;
-    page-break-inside: avoid !important;
-  }
-
-  .id-card * {
+  .id-card,
+  .id-card h1,
+  .id-card p,
+  .id-card h3,
+  .id-card h4,
+  .id-card img,
+  .id-card div {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
